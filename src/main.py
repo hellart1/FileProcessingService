@@ -7,12 +7,12 @@ from src.api.routes.files import router as file_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    await init_redis()
+async def redis_lifespan(app_instance: FastAPI):
+    await init_redis(app_instance)
     yield
-    await close_redis()
+    await close_redis(app_instance)
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=redis_lifespan)
 
 app.include_router(file_router)
 
