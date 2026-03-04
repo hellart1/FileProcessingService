@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import tempfile
 
 import boto3
 import aioboto3
@@ -7,6 +8,9 @@ from botocore.exceptions import ClientError
 from fastapi import UploadFile
 from src.core.config import settings
 from typing import AsyncIterator, Dict, Any
+
+from src.utils.file_utils import get_extension
+
 
 class S3Service:
     def __init__(self):
@@ -22,7 +26,6 @@ class S3Service:
     async def put_concurrent_parts(self, byte_source: AsyncIterator[bytes],
                                    target_key: str) -> None:
         session = aioboto3.Session()
-        target_key = f"media/{target_key}"
         async with session.client('s3', **self.s3_config) as s3c:
             init_result = await s3c.create_multipart_upload(Bucket=self.bucket_name, Key=target_key)
             upload_token = init_result['UploadId']
@@ -80,21 +83,29 @@ class S3Service:
             logging.error(f"S3 Upload Error: {e}")
             return False
 
-    def download_file_sync(self, object_name: str, destination_path: str):
+    def download_file_sync(self, object_path: str, destination_path: str):
         s3_client = boto3.client("s3", **self.s3_config)
         try:
-            s3_client.download_file(self.bucket_name, object_name, destination_path)
+            s3_client.download_file(self.bucket_name, object_path, destination_path)
             return True
         except ClientError as e:
             logging.error(f"S3 Download Error: {e}")
             raise e
 
-    def generate_presigned_url(self, object_name: str, expiration=3600):
+    def download_temp_file(self, s3_key):
+        ext = get_extension(s3_key)
+        with tempfile.NamedTemporaryFile(suffix=ext, delete=False) as temp_file:
+            temp_path = temp_file.name
+            # logger.info(f'Downloading file to {temp_path}')
+            self.download_file_sync(s3_key, temp_path)
+        return temp_path
+
+    def generate_presigned_url(self, object_path: str, expiration=3600):
         s3_client = boto3.client("s3", **self.s3_config)
         try:
             response = s3_client.generate_presigned_url(
                 'get_object',
-                Params={'Bucket': self.bucket_name, 'Key': object_name},
+                Params={'Bucket': self.bucket_name, 'Key': object_path},
                 ExpiresIn=expiration
             )
             return response

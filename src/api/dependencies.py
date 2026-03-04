@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.database import AsyncSessionLocal
 from src.services.file_service import FileService
+from src.services.status_service import AsyncStatusService
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -14,9 +15,9 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 async def get_redis(request: Request) -> Redis:
-    if not hasattr(request.app.state, "redis_pool"):
-        raise RedisError('client is not initialized')
-    return Redis(connection_pool=request.app.state.redis_pool)
+    if hasattr(request.app.state, 'redis'):
+        return await request.app.state.redis
+    raise RedisError('Client is not initialized')
 
 DBSessionDep = Annotated[AsyncSession, Depends(get_db)]
 RedisDep = Annotated[Redis, Depends(get_redis)]
@@ -27,5 +28,10 @@ async def get_file_service(
 ) -> FileService:
     return FileService(db, redis)
 
-# Прописать StatusServiceDep для получения результата с редис
+async def get_status_service(
+        redis: RedisDep
+) -> AsyncStatusService:
+    return AsyncStatusService(redis)
+
 FileServiceDep = Annotated[FileService, Depends(get_file_service)]
+StatusServiceDep = Annotated[AsyncStatusService, Depends(get_status_service)]
