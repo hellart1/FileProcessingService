@@ -8,6 +8,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from src.db.database import Base
 from enum import Enum
 
+
 class StatusEnum(str, Enum):
     uploaded = "uploaded"
     processing = "processing"

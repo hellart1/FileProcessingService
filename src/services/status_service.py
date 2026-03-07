@@ -20,6 +20,7 @@ class BaseStatusService:
     def _key_progress(file_id: str) -> str:
         return f"file_status:{file_id}"
 
+
 class AsyncStatusService(BaseStatusService):
     async def get_result(self, uuid: str):
         in_cache = await self.redis.get(self._key_result(uuid))
@@ -39,8 +40,7 @@ class AsyncStatusService(BaseStatusService):
 
         return {'error': 'make sure processing is complete, try again'}
 
-
-    async def get_progress(self, uuid: str):
+    async def get_status(self, uuid: str):
         return json.loads(
             await self.redis.get(self._key_progress(uuid))
         )
@@ -55,7 +55,7 @@ class AsyncStatusService(BaseStatusService):
         except Exception as e:
             logging.error(f'Error saving result to redis: {e}')
 
-    async def set_progress(self, uuid: str, status: str, progress: int, ex: int =3600):
+    async def set_status(self, uuid: str, status: str, progress: int, ex: int = 3600):
         return await self.redis.set(
             self._key_progress(uuid),
             json.dumps({
@@ -64,6 +64,7 @@ class AsyncStatusService(BaseStatusService):
             }, ensure_ascii=False),
             ex=ex
         )
+
 
 class SyncStatusService(BaseStatusService):
     def set_result(self, uuid: str, result: str | dict, ex: int = 3600):
@@ -87,7 +88,7 @@ class SyncStatusService(BaseStatusService):
         except Exception as e:
             logging.error(f'Error saving result to redis: {e}')
 
-    def set_progress(self, uuid: str, status: str, progress: int, ex: int =3600):
+    def set_status(self, uuid: str, status: str, progress: int, ex: int = 3600):
         return self.redis.set(
             self._key_progress(uuid),
             json.dumps({

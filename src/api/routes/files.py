@@ -2,13 +2,12 @@ import json
 
 from fastapi import UploadFile, APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.annotation import Annotated
+
 from typing import Annotated
 
-from src.db.database import sync_engine, Base, async_engine
+from src.db.database import Base, async_engine
 from src.api.dependencies import FileServiceDep, StatusServiceDep, get_db
 from src.db.models import File
-from src.services.s3_service import S3Service
 
 router = APIRouter(tags=['Работа с файлами'])
 
@@ -22,17 +21,17 @@ async def upload_file(
 
 @router.get('/files/{file_id}/status')
 async def get_file_status(file_id: str, status_service: StatusServiceDep):
-    return await status_service.get_progress(file_id)
+    return await status_service.get_status(file_id)
 
 @router.get('/files/{file_id}/result')
 async def get_file_result(file_id: str, status_service: StatusServiceDep):
     return await status_service.get_result(file_id)
 
-@router.get('/files/{file_id}/eee')
-async def get_file_result(file_id: str, db: Annotated[AsyncSession, Depends(get_db)]):
-    file = await db.get(File, file_id)
-
-    return file.result
+# @router.get('/files/{file_id}/eee')
+# async def get_file_result(file_id: str, db: Annotated[AsyncSession, Depends(get_db)]):
+#     file = await db.get(File, file_id)
+#
+#     return file.result
 
 @router.post('/setup_database')
 async def setup_database():

@@ -28,7 +28,7 @@ class FileService:
         file_path = self.generate_path(file)
 
         await self.upload_to_storage(file, file_path)
-        await self.status.set_progress(file_hash, 'uploaded', 0)
+        await self.status.set_status(file_hash, 'uploaded', 0)
 
         await self.create_file_metadata(file, file_hash, file_path)
 
@@ -43,7 +43,7 @@ class FileService:
         return f'media/{unique_prefix}_{clean_name}'
 
     @staticmethod
-    async def async_iter_file(file: UploadFile, chunk_size: int = 5 * 1024 * 1024) -> AsyncGenerator[bytes | None]:
+    async def async_iter_file(file: UploadFile, chunk_size: int = 5 * 1024 * 1024) -> AsyncGenerator[bytes | None, None]:
         while True:
             chunk = await file.read(chunk_size)
             if not chunk:

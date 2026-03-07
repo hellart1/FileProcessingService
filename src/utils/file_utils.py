@@ -10,6 +10,7 @@ def safe_remove_temp_file(path):
         logging.error(f'Failed to remove temp file {path}: {cleanup_error}')
 
 def get_extension(file, content_type=None):
+    # magic.from_file
     if content_type:
         ext = mimetypes.guess_extension(content_type)
         if not ext:

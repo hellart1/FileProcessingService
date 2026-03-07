@@ -2,29 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a6f0f64b-b640-4d21-a751-8f5ec59a84cd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/services/ocr_service.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/file_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/INFO" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/dependencies.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/dependencies.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/api/routes/files.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api/routes/files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/api/routes/health.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/database.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/db/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/redis.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/redis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/file.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/schemas/user.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/file_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/file_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/s3_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/s3_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/ocr_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/ocr_service.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/services/status_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/status_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/db_queries.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/generate_unique_hash.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/hash_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/process_pdf.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/set_progress.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/workers/celery_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/workers/celery_app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/file_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/file_utils.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/workers/tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/workers/tasks.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
