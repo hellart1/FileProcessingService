@@ -40,7 +40,7 @@ class FileService:
     def generate_path(file: UploadFile) -> str:
         clean_name = Path(file.filename).name
         unique_prefix = uuid.uuid4().hex
-        return f'media/{unique_prefix}_{clean_name}'
+        return f'tmp/{unique_prefix}_{clean_name}'
 
     @staticmethod
     async def async_iter_file(file: UploadFile, chunk_size: int = 5 * 1024 * 1024) -> AsyncGenerator[bytes | None, None]:
