@@ -1,9 +1,6 @@
 import redis
 from celery import Celery
-from sqlalchemy.orm import scoped_session
-
 from src.core.config import settings
-from src.db.database import SyncSessionLocal
 
 celery_app = Celery('workers',
                     broker=settings.RABBITMQ_URL)

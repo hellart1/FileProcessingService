@@ -1,5 +1,3 @@
-import json
-
 from fastapi import UploadFile, APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -27,11 +25,11 @@ async def get_file_status(file_id: str, status_service: StatusServiceDep):
 async def get_file_result(file_id: str, status_service: StatusServiceDep):
     return await status_service.get_result(file_id)
 
-# @router.get('/files/{file_id}/eee')
-# async def get_file_result(file_id: str, db: Annotated[AsyncSession, Depends(get_db)]):
-#     file = await db.get(File, file_id)
-#
-#     return file.result
+@router.get('/files/{file_id}/eee')
+async def get_file_result(file_id: str, db: Annotated[AsyncSession, Depends(get_db)]):
+    file = await db.get(File, file_id)
+
+    return file.result
 
 @router.post('/setup_database')
 async def setup_database():

@@ -1,0 +1,49 @@
+services:
+  api:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - rabbitmq
+      - redis
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+  rabbitmq:
+    image: rabbitmq:3.12.1-management
+    hostname: rabbit
+    environment:
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbit_data:/var/lib/rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  redis:
+    image: redis:7.0.15
+    volumes:
+      - redis_data:/data
+  db:
+    image: postgres:16.13
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  celery_worker:
+    build: .
+    command: celery -A src.workers.celery_app worker -l INFO
+    depends_on:
+      - api
+    volumes:
+      - .:/app
+
+volumes:
+  db_data:
+  rabbit_data:
+  redis_data:

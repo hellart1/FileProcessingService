@@ -1,15 +1,11 @@
-import json
-import logging
-import os
-import tempfile
-import redis
+from celery import shared_task
 from celery.utils.log import get_task_logger
 
 from src.core.config import settings
-from src.services.ocr_service import Registry, process_file
+from src.services.reader_service import Registry, process_file
 from src.services.s3_service import s3_client
 from src.utils.file_utils import safe_remove_temp_file
-from src.workers.celery_app import celery_app, sync_redis_client
+from src.workers.celery_app import sync_redis_client
 from src.services.status_service import SyncStatusService
 
 
@@ -18,7 +14,7 @@ status_service = SyncStatusService(sync_redis_client)
 logger = get_task_logger(__name__)
 
 
-@celery_app.task()
+@shared_task()
 def processing_file(s3_key, uuid):
     file_path = None
     logger.info(f'Start processing for {uuid}')
