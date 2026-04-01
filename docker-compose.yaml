@@ -4,14 +4,32 @@ services:
     restart: always
     ports:
       - "8000:8000"
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000
     depends_on:
-      - db
-      - rabbitmq
-      - redis
+      migrate:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     env_file:
       - .env
     volumes:
       - .:/app
+
+  migrate:
+    build: .
+    command: alembic upgrade head
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
   rabbitmq:
     image: rabbitmq:3.12.1-management
     hostname: rabbit
@@ -19,27 +37,51 @@ services:
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST}
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      retries: 5
+      timeout: 5s
+      interval: 10s
     volumes:
       - rabbit_data:/var/lib/rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
+
   redis:
     image: redis:7.0.15
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      retries: 5
+      timeout: 5s
+      interval: 10s
     volumes:
       - redis_data:/data
+
   db:
     image: postgres:16.13
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      retries: 5
+      timeout: 5s
+      interval: 10s
     volumes:
       - db_data:/var/lib/postgresql/data
+
   celery_worker:
     build: .
     command: celery -A src.workers.celery_app worker -l INFO
     depends_on:
-      - api
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - .:/app
 
