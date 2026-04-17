@@ -2,7 +2,7 @@ from datetime import datetime
 import uuid
 from typing import Optional
 
-from sqlalchemy import Column, Integer, String, DateTime, func, Enum as SAEnum
+from sqlalchemy import Column, Integer, String, DateTime, func, Enum as SAEnum, JSON
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB
 from src.db.database import Base
@@ -25,7 +25,7 @@ class File(Base):
     status: Mapped[str] = mapped_column(SAEnum(StatusEnum, name='status_enum'),
                                         default=StatusEnum.uploaded)
     progress: Mapped[int] = mapped_column(default=0)
-    result: Mapped[Optional[dict]] = mapped_column(JSONB)
+    result: Mapped[Optional[dict]] = mapped_column(JSON().with_variant(JSONB(), "postgresql"))
     s3_path: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True),
                                                  server_default=func.now())
